@@ -1,0 +1,18 @@
+# Ignore object files
+*.o
+
+# Ignore CUDA compiled output
+*.cu.o
+
+# Ignore executables
+*.out
+*.exe
+a.out
+
+# Ignore build directories
+/build/
+/bin/
+/obj/
+
+# Ignore backup files
+*~
