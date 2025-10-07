@@ -9,7 +9,8 @@
 - Each threads has there own private registers
 - Each warp contains 32 threads
 - thread Blocks are the chuncks of warps, depends on your gpu, modern gpu typically contains 32 warps; it is a 3d array of threads
-- grid is the topmost layer having global memory, it is a 3d array of thread blocks
+- then comes the gpu processors containing multiple thread blocks.
+- grid is the software concept, determined by kernel, a single grid can have multiple processors working at a time, it is a 3d array of thread blocks
 
 All GPU programs, known as kernels, are executed within this grid structure. When you launch a kernel, you specify both the grid size (the number of thread blocks) and the block size (the number of threads per block). This hierarchical approach ensures efficient computation and data management, allowing the GPU to handle extensive and complex tasks effectively. 
 
