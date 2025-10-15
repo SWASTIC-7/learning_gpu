@@ -246,3 +246,73 @@ float value = matrix[row * N + col];  // Adjacent threads access same row
 
 **Real-world analogy:** The 32 people are now randomly teleporting to different buffet tables across different rooms. Complete chaos, no efficiency.
 
+### Environment Setup
+
+#### Prerequisites
+- NVIDIA GPU (GTX 900 series or newer recommended)
+- Windows 10/11, Linux, or macOS (with eGPU)
+
+#### Installation Steps
+
+**1. Install NVIDIA Driver**
+```bash
+# Check if driver is installed
+nvidia-smi
+
+# If not installed, download from:
+# https://www.nvidia.com/Download/index.aspx
+```
+
+**2. Install CUDA Toolkit**
+```bash
+# Download from: https://developer.nvidia.com/cuda-downloads
+# Choose your OS and follow installer
+
+# Verify installation
+nvcc --version
+```
+
+**3. Verify Setup**
+```bash
+# Check GPU info
+nvidia-smi
+
+# Expected output:
+# +-----------------------------------------------------------------------------+
+# | NVIDIA-SMI 535.xx       Driver Version: 535.xx       CUDA Version: 12.2    |
+# |-------------------------------+----------------------+----------------------+
+# | GPU  Name                     | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+# +-------------------------------+----------------------+----------------------+
+# | Your GPU Model                | 0000:01:00.0    On   | N/A                  |
+# +-------------------------------+----------------------+----------------------+
+```
+
+#### Compile and Run First Program
+
+clone the repo
+```
+git clone https://github.com/SWASTIC-7/learning_gpu
+```
+
+**Compile and run:**
+```bash
+cd learning_gpu
+# Compile
+nvcc hello.cu -o hello.o
+
+# Run
+./hello
+
+```
+// Output:
+```c
+Hello World from CPU!
+Hello World from Thread 0, Block 1, BlockDim 4
+Hello World from Thread 1, Block 1, BlockDim 4
+Hello World from Thread 2, Block 1, BlockDim 4
+Hello World from Thread 3, Block 1, BlockDim 4
+Hello World from Thread 0, Block 0, BlockDim 4
+Hello World from Thread 1, Block 0, BlockDim 4
+Hello World from Thread 2, Block 0, BlockDim 4
+Hello World from Thread 3, Block 0, BlockDim 4
+```
