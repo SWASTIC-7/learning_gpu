@@ -62,7 +62,6 @@ int main() {
 
     cudaMemcpy(h_C, d_C, N*N*sizeof(float), cudaMemcpyDeviceToHost);
 
-    // Print result
     printf("Result matrix C:\n");
     for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j)
