@@ -28,20 +28,36 @@ int main(){
     // cudaMalloc allocates GLOBAL memory on GPU
     // Global memory: ~400-800 cycle latency, 4-24 GB size
     cudaMalloc((void**)&d_a, N*sizeof(int));
+
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+
+    float time_h2d, time_kernel, time_d2h;
     
     // Step 3: Copy data CPU → GPU (via PCIe bus)
     // This is SLOW (~10 GB/s vs ~900 GB/s GPU memory bandwidth)
     // Minimize these transfers!
+    cudaEventRecord(start, 0);
     cudaMemcpy(d_a, a, N*sizeof(int), cudaMemcpyHostToDevice);
-
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
+    cudaEventElapsedTime(&time_h2d, start, stop);
     // Step 4: Launch kernel
     // <<<1, N>>> = 1 block, N threads
     // All N threads run in parallel (grouped into ⌈N/32⌉ warps)
+    cudaEventRecord(start, 0);
     fun<<<1, N>>>(d_a); 
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
+    cudaEventElapsedTime(&time_kernel, start, stop);
     
     // Step 5: Copy result GPU → CPU
+    cudaEventRecord(start, 0);
     cudaMemcpy(a, d_a, N*sizeof(int), cudaMemcpyDeviceToHost);
-    
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
+    cudaEventElapsedTime(&time_d2h, start, stop);
     // Step 6: Free GPU memory (prevents memory leak)
     cudaFree(d_a);
 
@@ -57,7 +73,16 @@ int main(){
     // Optimization opportunity:
     // → Each thread only accesses memory once (good!)
     // → Could use shared memory if threads needed to communicate
-    
+    printf("Time (ms):\n");
+    printf("  Host → Device memcpy : %.6f ms\n", time_h2d);
+    printf("  Kernel Execution      : %.6f ms\n", time_kernel);
+    printf("  Device → Host memcpy : %.6f ms\n", time_d2h);
+
+
+    // in this particular case, you can see the memcpy takes around 1-2ms
+    // Clean up events
+    cudaEventDestroy(start);
+    cudaEventDestroy(stop);
     return 0;
 }
 
